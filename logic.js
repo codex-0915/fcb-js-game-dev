@@ -1,6 +1,7 @@
 // Initialize variables
 let board;
 let score = 0;
+let highscore = 0;
 let rows = 4;
 let columns = 4;
 
@@ -69,16 +70,18 @@ function handleSlide(e) {
     }
   }
 
+  document.getElementById("score").innerText = score;
+
   setTimeout(() => {
     checkWin();
-  }, 100);
+  }, 10);
 
   if (hasLost()) {
     setTimeout(() => {
       window.alert("Game Over. You have lost the game. Game will restart.");
       restartGame();
       alert("Click any arrow key to restart.");
-    }, 100);
+    }, 10);
   }
 }
 
@@ -88,23 +91,24 @@ function filterZero(row) {
   return row.filter((num) => num != 0);
 }
 
-function slide(row) {
-  row = filterZero(row);
+function slide(tiles) {
+  tiles = filterZero(tiles);
 
-  for (let i = 0; i < row.length - 1; i++) {
-    if (row[i] === row[i + 1]) {
-      row[i] *= 2;
-      row[i + 1] = 0;
+  for (let i = 0; i < tiles.length - 1; i++) {
+    if (tiles[i] === tiles[i + 1]) {
+      tiles[i] *= 2;
+      tiles[i + 1] = 0;
+      score += tiles[i];
     }
   }
 
-  row = filterZero(row);
+  tiles = filterZero(tiles);
 
-  while (row.length < columns) {
-    row.push(0);
+  while (tiles.length < columns) {
+    tiles.push(0);
   }
 
-  return row;
+  return tiles;
 }
 
 function slideUp() {
@@ -255,7 +259,7 @@ function restartGame() {
   ];
 
   setRandomTile();
-  setRandomTile();
+
   is2048Exist = false;
   is4096Exist = false;
   is8192Exist = false;
