@@ -68,6 +68,18 @@ function handleSlide(e) {
       console.log("Wrong key");
     }
   }
+
+  setTimeout(() => {
+    checkWin();
+  }, 100);
+
+  if (hasLost()) {
+    setTimeout(() => {
+      window.alert("Game Over. You have lost the game. Game will restart.");
+      restartGame();
+      alert("Click any arrow key to restart.");
+    }, 100);
+  }
 }
 
 document.addEventListener("keydown", handleSlide);
@@ -80,7 +92,7 @@ function slide(row) {
   row = filterZero(row);
 
   for (let i = 0; i < row.length - 1; i++) {
-    if (row[i] == row[i + 1]) {
+    if (row[i] === row[i + 1]) {
       row[i] *= 2;
       row[i + 1] = 0;
     }
@@ -162,7 +174,7 @@ function slideRight() {
 function hasEmptyTile() {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      if (board[r][c] == 0) {
+      if (board[r][c] === 0) {
         return true;
       }
     }
@@ -172,7 +184,8 @@ function hasEmptyTile() {
 
 function setRandomTile() {
   if (!hasEmptyTile()) {
-    window.alert("Game Over");
+    // window.alert("Game Over");
+    return;
   }
 
   let found = false;
@@ -180,7 +193,7 @@ function setRandomTile() {
   while (!found) {
     let r = Math.floor(Math.random() * rows);
     let c = Math.floor(Math.random() * columns);
-    if (board[r][c] == 0) {
+    if (board[r][c] === 0) {
       let randNum = Math.random() < 0.9 ? 2 : 4;
       board[r][c] = randNum;
       let tile = document.getElementById(r.toString() + "-" + c.toString());
@@ -190,4 +203,61 @@ function setRandomTile() {
       found = true;
     }
   }
+}
+
+function checkWin() {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (board[r][c] === 2048 && !is2048Exist) {
+        window.alert("You win! You got the 2048 tile!");
+        is2048Exist = true;
+      } else if (board[r][c] === 4096 && !is4096Exist) {
+        window.alert(
+          "You are unstoppable at 4096! You are fantastically unstoppable!"
+        );
+        is4096Exist = true;
+      } else if (board[r][c] === 8192 && !is8192Exist) {
+        window.alert("Victory! You have reached 8192! You are master of 2048!");
+        is8192Exist = true;
+      }
+    }
+  }
+}
+
+function hasLost() {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (board[r][c] === 0) {
+        return false;
+      }
+
+      const currentTile = board[r][c];
+      if (
+        (r > 0 && board[r - 1][c] === currentTile) || // checking above
+        (r < rows - 1 && board[r + 1][c] === currentTile) || // checking below
+        (c > 0 && board[r][c - 1] === currentTile) || // checking left
+        (c < columns - 1 && board[r][c + 1] === currentTile) // checking right
+      ) {
+        return false;
+      }
+    }
+  }
+  // No possible moves left, the user has lost
+  return true;
+}
+
+function restartGame() {
+  board = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
+  setRandomTile();
+  setRandomTile();
+  is2048Exist = false;
+  is4096Exist = false;
+  is8192Exist = false;
+  score = 0;
 }
