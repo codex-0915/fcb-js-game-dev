@@ -84,9 +84,41 @@ function slide(row) {
   return row;
 }
 
-function slideUp() {}
+function slideUp() {
+  for (let c = 0; c < columns; c++) {
+    let col = [];
+    for (let r = 0; r < rows; r++) {
+      col.push(board[r][c]);
+    }
+    col = slide(col);
 
-function slideDown() {}
+    for (let r = 0; r < rows; r++) {
+      board[r][c] = col[r];
+      let tile = document.getElementById(r.toString() + "-" + c.toString());
+      let num = board[r][c];
+      updateTile(tile, num);
+    }
+  }
+}
+
+function slideDown() {
+  for (let c = 0; c < columns; c++) {
+    let col = [];
+    for (let r = 0; r < rows; r++) {
+      col.push(board[r][c]);
+    }
+    col.reverse();
+    col = slide(col);
+    col.reverse();
+
+    for (let r = 0; r < rows; r++) {
+      board[r][c] = col[r];
+      let tile = document.getElementById(r.toString() + "-" + c.toString());
+      let num = board[r][c];
+      updateTile(tile, num);
+    }
+  }
+}
 
 function slideLeft() {
   for (let r = 0; r < rows; r++) {
@@ -101,4 +133,17 @@ function slideLeft() {
   }
 }
 
-function slideRight() {}
+function slideRight() {
+  for (let r = 0; r < rows; r++) {
+    let row = board[r];
+    row.reverse();
+    row = slide(row);
+    row.reverse();
+    board[r] = row;
+    for (let c = 0; c < columns; c++) {
+      let tile = document.getElementById(r.toString() + "-" + c.toString());
+      let num = board[r][c];
+      updateTile(tile, num);
+    }
+  }
+}
