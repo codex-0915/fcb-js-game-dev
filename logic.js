@@ -4,6 +4,10 @@ let score = 0;
 let rows = 4;
 let columns = 4;
 
+let is2048Exist = false;
+let is4096Exist = false;
+let is8192Exist = false;
+
 function setGame() {
   board = [
     [0, 0, 0, 0],
@@ -21,6 +25,9 @@ function setGame() {
       document.getElementById("board").append(tile);
     }
   }
+
+  setRandomTile();
+  setRandomTile();
 }
 
 function updateTile(tile, num) {
@@ -47,12 +54,16 @@ function handleSlide(e) {
   if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
     if (e.code === "ArrowUp") {
       slideUp();
+      setRandomTile();
     } else if (e.code === "ArrowDown") {
       slideDown();
+      setRandomTile();
     } else if (e.code === "ArrowLeft") {
       slideLeft();
+      setRandomTile();
     } else if (e.code === "ArrowRight") {
       slideRight();
+      setRandomTile();
     } else {
       console.log("Wrong key");
     }
@@ -144,6 +155,39 @@ function slideRight() {
       let tile = document.getElementById(r.toString() + "-" + c.toString());
       let num = board[r][c];
       updateTile(tile, num);
+    }
+  }
+}
+
+function hasEmptyTile() {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (board[r][c] == 0) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function setRandomTile() {
+  if (!hasEmptyTile()) {
+    window.alert("Game Over");
+  }
+
+  let found = false;
+
+  while (!found) {
+    let r = Math.floor(Math.random() * rows);
+    let c = Math.floor(Math.random() * columns);
+    if (board[r][c] == 0) {
+      let randNum = Math.random() < 0.9 ? 2 : 4;
+      board[r][c] = randNum;
+      let tile = document.getElementById(r.toString() + "-" + c.toString());
+      tile.innerText = randNum.toString();
+      tile.classList.add("x" + randNum.toString());
+
+      found = true;
     }
   }
 }
